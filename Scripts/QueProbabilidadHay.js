@@ -1,15 +1,33 @@
+let desafiante = null, desafiado = null;
+
 document.getElementById("Jugar").addEventListener("click", jugar);
+document.getElementById("btnDesafiado").addEventListener("click", getDesafiado);
+document.getElementById("btnDesafiante").addEventListener("click", getDesafiante);
 document.getElementById("NumeroMax").addEventListener("change", mostrarBoton);
 
  function jugar(){
-    const maxNumero = document.getElementById("NumeroMax").value;
-    const desafiado =  getRandomNumber(maxNumero);
-    const desafiante =  getRandomNumber(maxNumero);
-    console.log(desafiado);
-    document.getElementById("DesafiadoResultado").innerText = `Desafiado: ${desafiado}`;
-    document.getElementById("DesafianteResultado").innerText = `Desafiante: ${desafiante}`;
-
-    document.getElementById("Jugar").innerText = 'Vuelta';
+   if(desafiado != null && desafiante != null){
+    if(desafiado == desafiante){
+      document.getElementById("Resultado").innerText = `Desafiado: ${desafiado} || Desafiante ${desafiante} | Iguales`;
+    }else{
+      document.getElementById("Resultado").innerText = `Desafiado: ${desafiado} || Desafiante ${desafiante} | Distintos`;
+    }
+      desafiado = null;
+      desafiante = null;
+      if(document.getElementById("Jugar").innerText == 'Vuelta') document.getElementById("Jugar").innerText = 'Ida';
+      else document.getElementById("Jugar").innerText = 'Vuelta';
+    
+      document.getElementById("Desafiado").className = 'Visible';
+      document.getElementById("btnDesafiado").className = 'Visible';
+      document.getElementById("lblDesafiado").className = 'Visible';  
+      document.getElementById("Desafiante").className = 'Visible';
+      document.getElementById("btnDesafiante").className = 'Visible';
+      document.getElementById("lblDesafiante").className = 'Visible';
+   }else{
+     if(desafiado == null) alert("Falta ingresar un número para el desafiado")
+     if(desafiante == null) alert("Falta ingresar un número para el desafiante")
+   }
+    
 }
 
 function mostrarBoton(){
@@ -20,25 +38,33 @@ function mostrarBoton(){
     }
 }
 
+function getDesafiado(){
+  const maxNumero = document.getElementById("NumeroMax").value;
+  const value = document.getElementById("Desafiado").value;
+  if(validarInput(value, maxNumero)) desafiado = value;
+  else alert("El número ingresado no es válido para el desafiado.");
+  document.getElementById("Desafiado").value = '';
+  document.getElementById("Desafiado").className = 'Oculto';
+  document.getElementById("btnDesafiado").className = 'Oculto';
+  document.getElementById("lblDesafiado").className = 'Oculto';
+}
+
+function getDesafiante(){
+  const maxNumero = document.getElementById("NumeroMax").value;
+  const value = document.getElementById("Desafiante").value;
+  if(validarInput(value, maxNumero)) desafiante = value;
+  else alert("El número ingresado no es válido para el desafiante.");
+  document.getElementById("Desafiante").value = '';
+  document.getElementById("Desafiante").className = 'Oculto';
+  document.getElementById("btnDesafiante").className = 'Oculto';
+  document.getElementById("lblDesafiante").className = 'Oculto';
+}
 
 
-function getRandomNumber(max){
-    const url = new URL(`http://www.randomnumberapi.com/api/v1.0/random?min=1&max=${max}&count=2`);
-    let params = { 
-        min : 1,
-        max: max,
-        count: 2
-    }
-    //url.search = new URLSearchParams(params).toString();
-    console.log('url',url)
-    fetch(url,{
-        method: 'GET',
-        mode: 'no-cors'
-    }).then(res =>res.json())
-    .then(data => {
-      return data
-    })
-    .catch(error => console.error(error))
+function validarInput(input, max){
+  let inp = parseInt(input);
+  if(inp > 0 && inp <= max) return true;
+  else return false;
 }
 
 // Restricts input for the given textbox to the given inputFilter.
@@ -61,3 +87,9 @@ function setInputFilter(textbox, inputFilter) {
 
 setInputFilter(document.getElementById("NumeroMax"), function(value) {
     return /^\d*$/.test(value); });
+
+setInputFilter(document.getElementById("Desafiante"), function(value) {
+  return /^\d*$/.test(value); });
+
+setInputFilter(document.getElementById("Desafiado"), function(value) {
+  return /^\d*$/.test(value); });
